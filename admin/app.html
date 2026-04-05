@@ -120,7 +120,7 @@ particlesJS("particles-js", {
 });
 
 // GITHUB CONFIG
-const GITHUB_TOKEN = "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";
+const GITHUB_TOKEN = "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";
 const REPO = "updownsharif/auth-system";
 
 const app = JSON.parse(localStorage.getItem("currentApp"));
@@ -194,25 +194,27 @@ function deleteLicense(i){ appData.licenses.splice(i,1); render(); }
 async function saveToGitHub(){
     const url = `https://api.github.com/repos/${REPO}/contents/${FILE_PATH}`;
 
+    // GET FILE
     const res = await fetch(url, {
         headers: {
-    Authorization: "Bearer " + GITHUB_TOKEN,
-    "Content-Type": "application/json"
-});
-  console.log(await res.json());
+            Authorization: "Bearer " + GITHUB_TOKEN,
+            "Content-Type": "application/json"
+        }
+    });
 
     const file = await res.json();
+    console.log("GET:", file);
 
     if(!file.sha){
-        alert("❌ Error: file not found / bad token");
-        console.log(file);
+        alert("❌ Error: " + file.message);
         return;
     }
 
+    // UPDATE FILE
     const update = await fetch(url, {
         method: "PUT",
         headers: {
-            Authorization: "token " + GITHUB_TOKEN,
+            Authorization: "Bearer " + GITHUB_TOKEN,
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
@@ -223,12 +225,12 @@ async function saveToGitHub(){
     });
 
     const result = await update.json();
+    console.log("PUT:", result);
 
     if(update.ok){
         alert("Saved ✅");
     } else {
-        alert("Save failed ❌");
-        console.log(result);
+        alert("❌ " + result.message);
     }
 }
 
