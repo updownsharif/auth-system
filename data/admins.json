@@ -6,7 +6,7 @@
     "apps": [
       {
         "name": "falconapp1",
-        "file": "https://raw.githubusercontent.com/updownsharif/auth-system/apps/falconapp1.json"
+        "file": "https://raw.githubusercontent.com/updownsharif/auth-system/main/apps/falconapp1.json"
       }
     ]
   }
