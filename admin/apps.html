@@ -1,0 +1,40 @@
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Apps</title>
+</head>
+<body>
+
+<h2>Your Apps</h2>
+
+<div id="apps"></div>
+
+<script>
+const admin = JSON.parse(localStorage.getItem("admin"));
+
+if(!admin){
+    alert("Login first!");
+    window.location.href = "index.html";
+}
+
+const container = document.getElementById("apps");
+
+// show apps
+admin.apps.forEach(app => {
+    const btn = document.createElement("button");
+    btn.innerText = app.name;
+
+    btn.onclick = () => {
+        localStorage.setItem("currentApp", JSON.stringify(app));
+        window.location.href = "app.html";
+    };
+
+    container.appendChild(btn);
+    container.appendChild(document.createElement("br"));
+});
+</script>
+
+</body>
+</html>
+```
