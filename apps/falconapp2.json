@@ -1,1 +1,16 @@
-
+{
+  "app_name": "falconapp2",
+  "users": [
+    {
+      "username": "user1",
+      "password": "pass1",
+      "expiry": "2026-05-01"
+    }
+  ],
+  "licenses": [
+    {
+      "key": "ABC123",
+      "expiry": "2026-06-01"
+    }
+  ]
+}
