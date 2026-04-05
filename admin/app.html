@@ -120,7 +120,7 @@ particlesJS("particles-js", {
 });
 
 // GITHUB CONFIG
-const GITHUB_TOKEN = "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";
+const GITHUB_TOKEN = "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";
 const REPO = "updownsharif/auth-system";
 
 const app = JSON.parse(localStorage.getItem("currentApp"));
@@ -195,8 +195,11 @@ async function saveToGitHub(){
     const url = `https://api.github.com/repos/${REPO}/contents/${FILE_PATH}`;
 
     const res = await fetch(url, {
-        headers: { Authorization: "token " + GITHUB_TOKEN }
-    });
+        headers: {
+    Authorization: "Bearer " + GITHUB_TOKEN,
+    "Content-Type": "application/json"
+});
+  console.log(await res.json());
 
     const file = await res.json();
 
