@@ -26,9 +26,10 @@ admin.apps.forEach(app => {
     btn.innerText = app.name;
 
     btn.onclick = () => {
-        localStorage.setItem("currentApp", JSON.stringify(app));
-        window.location.href = "app.html";
-    };
+    console.log("clicked app:", app);
+    localStorage.setItem("currentApp", JSON.stringify(app));
+    window.location.href = "app.html";
+};
 
     container.appendChild(btn);
     container.appendChild(document.createElement("br"));
