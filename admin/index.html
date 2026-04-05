@@ -17,7 +17,7 @@ async function login() {
     const user = document.getElementById("username").value;
     const pass = document.getElementById("password").value;
 
-    const res = await fetch("https://raw.githubusercontent.com/YOUR_REPO/data/admins.json");
+    const res = await fetch("https://raw.githubusercontent.com/updownsharif/auth-system/main/data/admins.json");
     const data = await res.json();
 
     const found = data.find(a => a.username === user && a.password === pass);
