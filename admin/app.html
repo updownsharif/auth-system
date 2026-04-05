@@ -8,6 +8,13 @@
 
 <h2 id="appname"></h2>
 
+<hr>
+
+<button onclick="addUser()">➕ Add User</button>
+<button onclick="addLicense()">🔑 Add License</button>
+
+<hr>
+
 <h3>Users</h3>
 <div id="users"></div>
 
@@ -16,26 +23,85 @@
 
 <script>
 const app = JSON.parse(localStorage.getItem("currentApp"));
-
 document.getElementById("appname").innerText = app.name;
+
+let appData = null;
 
 async function loadApp(){
     const res = await fetch(app.file);
-    const data = await res.json();
+    appData = await res.json();
 
+    render();
+}
+
+function render(){
     const usersDiv = document.getElementById("users");
     const licDiv = document.getElementById("licenses");
 
     usersDiv.innerHTML = "";
     licDiv.innerHTML = "";
 
-    data.users.forEach(u => {
-        usersDiv.innerHTML += "👤 " + u.username + " (" + u.expiry + ")<br>";
+    appData.users.forEach((u, index) => {
+        usersDiv.innerHTML += `
+            👤 ${u.username} (${u.expiry})
+            <button onclick="deleteUser(${index})">❌</button>
+            <br>
+        `;
     });
 
-    data.licenses.forEach(l => {
-        licDiv.innerHTML += "🔑 " + l.key + " (" + l.expiry + ")<br>";
+    appData.licenses.forEach((l, index) => {
+        licDiv.innerHTML += `
+            🔑 ${l.key} (${l.expiry})
+            <button onclick="deleteLicense(${index})">❌</button>
+            <br>
+        `;
     });
+}
+
+// ADD USER
+function addUser(){
+    const username = prompt("Enter username");
+    const password = prompt("Enter password");
+    const expiry = prompt("Enter expiry (YYYY-MM-DD)");
+
+    if(!username || !password || !expiry) return;
+
+    appData.users.push({
+        username,
+        password,
+        expiry
+    });
+
+    alert("User added (not saved yet)");
+    render();
+}
+
+// ADD LICENSE
+function addLicense(){
+    const key = prompt("Enter license key");
+    const expiry = prompt("Enter expiry (YYYY-MM-DD)");
+
+    if(!key || !expiry) return;
+
+    appData.licenses.push({
+        key,
+        expiry
+    });
+
+    alert("License added (not saved yet)");
+    render();
+}
+
+// DELETE USER
+function deleteUser(index){
+    appData.users.splice(index, 1);
+    render();
+}
+
+// DELETE LICENSE
+function deleteLicense(index){
+    appData.licenses.splice(index, 1);
+    render();
 }
 
 loadApp();
