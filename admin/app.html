@@ -2,17 +2,101 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Manage App</title>
+  <title>Falcon Panel</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- Particles -->
+  <script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Orbitron', sans-serif;
+      background: #0a0a0a;
+      color: white;
+      overflow-x: hidden;
+    }
+
+    #particles-js {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    .container {
+      padding: 20px;
+    }
+
+    h2 {
+      color: cyan;
+      text-shadow: 0 0 10px cyan;
+    }
+
+    h3 {
+      color: #aaa;
+    }
+
+    input {
+      padding: 8px;
+      margin: 5px;
+      border: 1px solid cyan;
+      background: transparent;
+      color: white;
+      outline: none;
+    }
+
+    button {
+      padding: 8px 15px;
+      margin: 5px;
+      border: 1px solid cyan;
+      background: transparent;
+      color: cyan;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: cyan;
+      color: black;
+      box-shadow: 0 0 10px cyan;
+    }
+
+    .box {
+      border: 1px solid rgba(0,255,255,0.2);
+      padding: 15px;
+      margin-top: 10px;
+    }
+  </style>
 </head>
+
 <body>
+
+<div id="particles-js"></div>
+
+<div class="container">
 
 <h2 id="appname"></h2>
 
-<hr>
+<!-- INPUTS -->
+<div class="box">
+  <h3>Add User</h3>
+  <input id="username" placeholder="Username">
+  <input id="password" placeholder="Password">
+  <input id="expiry" placeholder="YYYY-MM-DD">
+  <button onclick="addUser()">Add</button>
+</div>
 
-<button onclick="addUser()">➕ Add User</button>
-<button onclick="addLicense()">🔑 Add License</button>
-  <button onclick="saveToGitHub()">💾 Save</button>
+<div class="box">
+  <h3>Add License</h3>
+  <input id="licenseKey" placeholder="License Key">
+  <input id="licenseExpiry" placeholder="YYYY-MM-DD">
+  <button onclick="addLicense()">Generate</button>
+</div>
+
+<button onclick="saveToGitHub()">💾 Save Changes</button>
 
 <hr>
 
@@ -22,22 +106,38 @@
 <h3>Licenses</h3>
 <div id="licenses"></div>
 
+</div>
+
 <script>
-const GITHUB_TOKEN = "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";
+// PARTICLES
+particlesJS("particles-js", {
+  particles: {
+    number: { value: 80 },
+    size: { value: 3 },
+    move: { speed: 2 },
+    line_linked: { enable: true }
+  }
+});
+
+// GITHUB CONFIG
+const GITHUB_TOKEN = "YOUR_NEW_TOKEN";
 const REPO = "updownsharif/auth-system";
-const FILE_PATH = `apps/${app.name}.json`;
+
 const app = JSON.parse(localStorage.getItem("currentApp"));
+const FILE_PATH = `apps/${app.name}.json`;
+
 document.getElementById("appname").innerText = app.name;
 
 let appData = null;
 
+// LOAD DATA
 async function loadApp(){
     const res = await fetch(app.file);
     appData = await res.json();
-
     render();
 }
 
+// RENDER
 function render(){
     const usersDiv = document.getElementById("users");
     const licDiv = document.getElementById("licenses");
@@ -45,115 +145,75 @@ function render(){
     usersDiv.innerHTML = "";
     licDiv.innerHTML = "";
 
-    appData.users.forEach((u, index) => {
+    appData.users.forEach((u, i) => {
         usersDiv.innerHTML += `
             👤 ${u.username} (${u.expiry})
-            <button onclick="deleteUser(${index})">❌</button>
-            <br>
-        `;
+            <button onclick="deleteUser(${i})">❌</button><br>`;
     });
 
-    appData.licenses.forEach((l, index) => {
+    appData.licenses.forEach((l, i) => {
         licDiv.innerHTML += `
             🔑 ${l.key} (${l.expiry})
-            <button onclick="deleteLicense(${index})">❌</button>
-            <br>
-        `;
+            <button onclick="deleteLicense(${i})">❌</button><br>`;
     });
-}
-
-  async function saveToGitHub() {
-    const url = `https://api.github.com/repos/${REPO}/contents/${FILE_PATH}`;
-
-    try {
-        // Get current file
-        const res = await fetch(url, {
-            headers: {
-                Authorization: "token " + GITHUB_TOKEN
-            }
-        });
-
-        const file = await res.json();
-
-        if (!file.sha) {
-            alert("Error: File not found or bad token");
-            console.log(file);
-            return;
-        }
-
-        // Update file
-        const update = await fetch(url, {
-            method: "PUT",
-            headers: {
-                Authorization: "token " + GITHUB_TOKEN,
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                message: "update app data",
-                content: btoa(JSON.stringify(appData, null, 2)),
-                sha: file.sha
-            })
-        });
-
-        const result = await update.json();
-
-        if (update.ok) {
-            alert("Saved to GitHub ✅");
-        } else {
-            alert("Save failed ❌");
-            console.log(result);
-        }
-
-    } catch (err) {
-        console.error(err);
-        alert("Error occurred");
-    }
 }
 
 // ADD USER
 function addUser(){
-    const username = prompt("Enter username");
-    const password = prompt("Enter password");
-    const expiry = prompt("Enter expiry (YYYY-MM-DD)");
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+    const expiry = document.getElementById("expiry").value;
 
-    if(!username || !password || !expiry) return;
+    if(!username || !password || !expiry) return alert("Fill all fields");
 
-    appData.users.push({
-        username,
-        password,
-        expiry
-    });
-
-    alert("User added (not saved yet)");
+    appData.users.push({ username, password, expiry });
     render();
 }
 
 // ADD LICENSE
 function addLicense(){
-    const key = prompt("Enter license key");
-    const expiry = prompt("Enter expiry (YYYY-MM-DD)");
+    const key = document.getElementById("licenseKey").value || generateKey();
+    const expiry = document.getElementById("licenseExpiry").value;
 
-    if(!key || !expiry) return;
+    if(!expiry) return alert("Enter expiry");
 
-    appData.licenses.push({
-        key,
-        expiry
+    appData.licenses.push({ key, expiry });
+    render();
+}
+
+// RANDOM KEY
+function generateKey(){
+    return Math.random().toString(36).substring(2, 10).toUpperCase();
+}
+
+// DELETE
+function deleteUser(i){ appData.users.splice(i,1); render(); }
+function deleteLicense(i){ appData.licenses.splice(i,1); render(); }
+
+// SAVE
+async function saveToGitHub(){
+    const url = `https://api.github.com/repos/${REPO}/contents/${FILE_PATH}`;
+
+    const res = await fetch(url, {
+        headers: { Authorization: "token " + GITHUB_TOKEN }
     });
 
-    alert("License added (not saved yet)");
-    render();
-}
+    const file = await res.json();
 
-// DELETE USER
-function deleteUser(index){
-    appData.users.splice(index, 1);
-    render();
-}
+    await fetch(url, {
+        method: "PUT",
+        headers: {
+            Authorization: "token " + GITHUB_TOKEN,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            message: "update data",
+            content: btoa(JSON.stringify(appData, null, 2)),
+            sha: file.sha
+        })
+    });
 
-// DELETE LICENSE
-function deleteLicense(index){
-    appData.licenses.splice(index, 1);
-    render();
+    alert("Saved 🔥");
 }
 
 loadApp();
