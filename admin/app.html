@@ -12,6 +12,7 @@
 
 <button onclick="addUser()">➕ Add User</button>
 <button onclick="addLicense()">🔑 Add License</button>
+  <button onclick="saveToGitHub()">💾 Save</button>
 
 <hr>
 
@@ -22,6 +23,9 @@
 <div id="licenses"></div>
 
 <script>
+const GITHUB_TOKEN = "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";
+const REPO = "updownsharif/auth-system";
+const FILE_PATH = `apps/${app.name}.json`;
 const app = JSON.parse(localStorage.getItem("currentApp"));
 document.getElementById("appname").innerText = app.name;
 
@@ -56,6 +60,54 @@ function render(){
             <br>
         `;
     });
+}
+
+  async function saveToGitHub() {
+    const url = `https://api.github.com/repos/${REPO}/contents/${FILE_PATH}`;
+
+    try {
+        // Get current file
+        const res = await fetch(url, {
+            headers: {
+                Authorization: "token " + GITHUB_TOKEN
+            }
+        });
+
+        const file = await res.json();
+
+        if (!file.sha) {
+            alert("Error: File not found or bad token");
+            console.log(file);
+            return;
+        }
+
+        // Update file
+        const update = await fetch(url, {
+            method: "PUT",
+            headers: {
+                Authorization: "token " + GITHUB_TOKEN,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                message: "update app data",
+                content: btoa(JSON.stringify(appData, null, 2)),
+                sha: file.sha
+            })
+        });
+
+        const result = await update.json();
+
+        if (update.ok) {
+            alert("Saved to GitHub ✅");
+        } else {
+            alert("Save failed ❌");
+            console.log(result);
+        }
+
+    } catch (err) {
+        console.error(err);
+        alert("Error occurred");
+    }
 }
 
 // ADD USER
