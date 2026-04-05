@@ -17,11 +17,6 @@
 <script>
 const app = JSON.parse(localStorage.getItem("currentApp"));
 
-if(!app){
-    alert("No app selected");
-    window.location.href = "apps.html";
-}
-
 document.getElementById("appname").innerText = app.name;
 
 async function loadApp(){
@@ -35,11 +30,11 @@ async function loadApp(){
     licDiv.innerHTML = "";
 
     data.users.forEach(u => {
-        usersDiv.innerHTML += u.username + " (" + u.expiry + ")<br>";
+        usersDiv.innerHTML += "👤 " + u.username + " (" + u.expiry + ")<br>";
     });
 
     data.licenses.forEach(l => {
-        licDiv.innerHTML += l.key + " (" + l.expiry + ")<br>";
+        licDiv.innerHTML += "🔑 " + l.key + " (" + l.expiry + ")<br>";
     });
 }
 
