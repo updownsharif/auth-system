@@ -1,31 +1,134 @@
-
-```html
+```html id="c9y2z1"
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Dashboard</title>
+  <title>Falcon Dashboard</title>
+
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- Particles -->
+  <script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Orbitron', sans-serif;
+      background: #0a0a0a;
+      color: white;
+      overflow: hidden;
+    }
+
+    #particles-js {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    .container {
+      padding: 30px;
+    }
+
+    h2 {
+      color: cyan;
+      text-shadow: 0 0 10px cyan;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .credits {
+      color: cyan;
+      border: 1px solid cyan;
+      padding: 8px 15px;
+      box-shadow: 0 0 10px cyan;
+    }
+
+    .card {
+      margin-top: 20px;
+      padding: 20px;
+      border: 1px solid rgba(0,255,255,0.2);
+      box-shadow: 0 0 10px rgba(0,255,255,0.1);
+    }
+
+    button {
+      padding: 12px 20px;
+      margin: 10px;
+      border: 1px solid cyan;
+      background: transparent;
+      color: cyan;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: cyan;
+      color: black;
+      box-shadow: 0 0 10px cyan;
+    }
+
+    .logo {
+      font-size: 20px;
+      color: cyan;
+      border: 1px solid cyan;
+      padding: 10px;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      text-align: center;
+    }
+  </style>
 </head>
+
 <body>
 
-<h2 id="welcome"></h2>
-<h3 id="credits"></h3>
+<div id="particles-js"></div>
 
-<button onclick="manageApps()">Manage Apps</button>
-<button onclick="createApp()">Create App</button>
+<div class="container">
+
+  <div class="topbar">
+    <h2 id="welcome"></h2>
+    <div style="display:flex; gap:10px;">
+      <div class="logo" id="logo"></div>
+      <div class="credits" id="credits"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Control Panel</h3>
+    <button onclick="manageApps()">📦 Manage Apps</button>
+    <button onclick="createApp()">➕ Create App</button>
+  </div>
+
+</div>
 
 <script>
-// get admin data
+// particles
+particlesJS("particles-js", {
+  particles: {
+    number: { value: 80 },
+    size: { value: 3 },
+    move: { speed: 2 },
+    line_linked: { enable: true }
+  }
+});
+
+// get admin
 const admin = JSON.parse(localStorage.getItem("admin"));
 
-// check if not logged in
 if(!admin){
     alert("Login first!");
     window.location.href = "index.html";
 }
 
-// show data
+// UI setup
 document.getElementById("welcome").innerText = "Welcome " + admin.username;
 document.getElementById("credits").innerText = "Credits: " + admin.credits;
+document.getElementById("logo").innerText = admin.username.charAt(0).toUpperCase();
 
 // buttons
 function manageApps(){
@@ -42,7 +145,7 @@ function createApp(){
         return;
     }
 
-    alert("Next step: we will add real app creation system");
+    alert("Next: we will create app + JSON + deduct credits");
 }
 </script>
 
