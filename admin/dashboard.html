@@ -1,1 +1,51 @@
 
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dashboard</title>
+</head>
+<body>
+
+<h2 id="welcome"></h2>
+<h3 id="credits"></h3>
+
+<button onclick="manageApps()">Manage Apps</button>
+<button onclick="createApp()">Create App</button>
+
+<script>
+// get admin data
+const admin = JSON.parse(localStorage.getItem("admin"));
+
+// check if not logged in
+if(!admin){
+    alert("Login first!");
+    window.location.href = "index.html";
+}
+
+// show data
+document.getElementById("welcome").innerText = "Welcome " + admin.username;
+document.getElementById("credits").innerText = "Credits: " + admin.credits;
+
+// buttons
+function manageApps(){
+    window.location.href = "apps.html";
+}
+
+function createApp(){
+    const name = prompt("Enter app name");
+
+    if(!name) return;
+
+    if(admin.credits < 25){
+        alert("Not enough credits");
+        return;
+    }
+
+    alert("Next step: we will add real app creation system");
+}
+</script>
+
+</body>
+</html>
+```
