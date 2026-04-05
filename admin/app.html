@@ -200,7 +200,13 @@ async function saveToGitHub(){
 
     const file = await res.json();
 
-    await fetch(url, {
+    if(!file.sha){
+        alert("❌ Error: file not found / bad token");
+        console.log(file);
+        return;
+    }
+
+    const update = await fetch(url, {
         method: "PUT",
         headers: {
             Authorization: "token " + GITHUB_TOKEN,
@@ -213,7 +219,14 @@ async function saveToGitHub(){
         })
     });
 
-    alert("Saved 🔥");
+    const result = await update.json();
+
+    if(update.ok){
+        alert("Saved ✅");
+    } else {
+        alert("Save failed ❌");
+        console.log(result);
+    }
 }
 
 loadApp();
